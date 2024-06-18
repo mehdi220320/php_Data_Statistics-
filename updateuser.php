@@ -1,45 +1,6 @@
 <?php
-global $db;
-include 'config db.php';
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the form input
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
-    $confpassword = filter_input(INPUT_POST, 'confpassword', FILTER_SANITIZE_STRING);
-    $fname = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
-    $lname = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
-    $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
-    // Validate form input
-    if (!empty($email) && !empty($password) && !empty($fname) && !empty($lname) && !empty($description) && !empty($confpassword)) {
-        if($password == $confpassword)
-        {
-            // Hash the password
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            // Prepare the SQL statement
-            $stmt = $db->prepare("INSERT INTO user (`id_user`, `nom`, `prenom`, `email`, `password`, `description`, `id_role`) VALUES (NULL,:lname,:fname,:email, :password, :description,'3')");
-            // Bind the parameters
-            $stmt->bindParam(':lname', $lname);
-            $stmt->bindParam(':fname', $fname);
-            $stmt->bindParam(':email', $email);
-            $stmt->bindParam(':password', $hashedPassword);
-            $stmt->bindParam(':description', $description);
-            // Execute the statement
-
-            if ($stmt->execute()) {
-                $error= "New user created successfully.";
-                header("Location: Login.php");
-            } else {
-                $error ="Error: Could not execute the query.";
-            }
-        }else {
-            $error="Please confirme your password";
-        }
-    } else {
-        $error= "Please fill in all fields.";
-    }
-}
 ?>
+
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 

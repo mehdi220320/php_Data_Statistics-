@@ -207,7 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <td><?php echo $user['prenom']; ?></td>
                                         <td><?php echo $user['description']; ?></td>
                                         <td><?php echo $user['id_role']; ?><br></td>
-                                        <td><a class="btn btn-secondary">Edit</a></td>
+                                        <td><a href="updateuser.php?id=<?php echo $user['User_id']; ?>" class="btn btn-secondary">Edit</a></td>
                                         <th>
                                             <form action="table.php" method="post" style="display:inline;">
                                                 <input type="hidden" name="user_id" value="<?php echo $user['id_user']; ?>">
