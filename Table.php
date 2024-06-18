@@ -1,4 +1,31 @@
 <?php
+global $db;
+include 'config db.php';
+
+$stmt = $db->query("SELECT * from user");
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Get the user ID from the POST request
+    $user_id = filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT);
+
+    if ($user_id) {
+        // Prepare the SQL statement to delete the user
+        $stmt = $db->prepare("DELETE FROM user WHERE id_user = :user_id");
+        $stmt->bindParam(':user_id', $user_id);
+
+        // Execute the statement
+        if ($stmt->execute()) {
+            echo "User deleted successfully.";
+        } else {
+            echo "Error: Could not delete the user.";
+        }
+    } else {
+        echo "Invalid user ID.";
+    }
+} else {
+    echo "Invalid request method.";
+}
 ?>
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
@@ -165,104 +192,40 @@
                             <table class="table my-0" id="dataTable">
                                 <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Position</th>
-                                    <th>Office</th>
-                                    <th>Age</th>
-                                    <th>Start date</th>
-                                    <th>Salary</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Description</th>
+                                    <th>Role</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar1.jpeg">Airi Satou</td>
-                                    <td>Accountant</td>
-                                    <td>Tokyo</td>
-                                    <td>33</td>
-                                    <td>2008/11/28</td>
-                                    <td>$162,700</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar2.jpeg">Angelica Ramos</td>
-                                    <td>Chief Executive Officer(CEO)</td>
-                                    <td>London</td>
-                                    <td>47</td>
-                                    <td>2009/10/09<br></td>
-                                    <td>$1,200,000</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar3.jpeg">Ashton Cox</td>
-                                    <td>Junior Technical Author</td>
-                                    <td>San Francisco</td>
-                                    <td>66</td>
-                                    <td>2009/01/12<br></td>
-                                    <td>$86,000</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar4.jpeg">Bradley Greer</td>
-                                    <td>Software Engineer</td>
-                                    <td>London</td>
-                                    <td>41</td>
-                                    <td>2012/10/13<br></td>
-                                    <td>$132,000</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar5.jpeg">Brenden Wagner</td>
-                                    <td>Software Engineer</td>
-                                    <td>San Francisco</td>
-                                    <td>28</td>
-                                    <td>2011/06/07<br></td>
-                                    <td>$206,850</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar1.jpeg">Brielle Williamson</td>
-                                    <td>Integration Specialist</td>
-                                    <td>New York</td>
-                                    <td>61</td>
-                                    <td>2012/12/02<br></td>
-                                    <td>$372,000</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar2.jpeg">Bruno Nash<br></td>
-                                    <td>Software Engineer</td>
-                                    <td>London</td>
-                                    <td>38</td>
-                                    <td>2011/05/03<br></td>
-                                    <td>$163,500</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar3.jpeg">Caesar Vance</td>
-                                    <td>Pre-Sales Support</td>
-                                    <td>New York</td>
-                                    <td>21</td>
-                                    <td>2011/12/12<br></td>
-                                    <td>$106,450</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar4.jpeg">Cara Stevens</td>
-                                    <td>Sales Assistant</td>
-                                    <td>New York</td>
-                                    <td>46</td>
-                                    <td>2011/12/06<br></td>
-                                    <td>$145,600</td>
-                                </tr>
-                                <tr>
-                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar5.jpeg">Cedric Kelly</td>
-                                    <td>Senior JavaScript Developer</td>
-                                    <td>Edinburgh</td>
-                                    <td>22</td>
-                                    <td>2012/03/29<br></td>
-                                    <td>$433,060</td>
-                                </tr>
+                                <?php foreach ($users as $user) { ?>
+                                    <tr>
+                                        <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar5.jpeg"><?php echo $user['nom']; ?></td>
+                                        <td><?php echo $user['prenom']; ?></td>
+                                        <td><?php echo $user['description']; ?></td>
+                                        <td><?php echo $user['id_role']; ?><br></td>
+                                        <td><a class="btn btn-secondary">Edit</a></td>
+                                        <th>
+                                            <form action="table.php" method="post" style="display:inline;">
+                                                <input type="hidden" name="user_id" value="<?php echo $user['id_user']; ?>">
+                                                <button class="btn btn-danger" type="submit">Delete</button>
+                                            </form>
+                                        </th>
+
+                                    </tr>
                                 </tbody>
+                                <?php }?>
                                 <tfoot>
                                 <tr>
-                                    <td><strong>Name</strong></td>
-                                    <td><strong>Position</strong></td>
-                                    <td><strong>Office</strong></td>
-                                    <td><strong>Age</strong></td>
-                                    <td><strong>Start date</strong></td>
-                                    <td><strong>Salary</strong></td>
+                                    <td><strong>First Name</strong></td>
+                                    <td><strong>Last Name</strong></td>
+                                    <td><strong>Description</strong></td>
+                                    <td><strong>Role</strong></td>
+                                    <td><strong>Edit</strong></td>
+                                    <td><strong>Delete</strong></td>
                                 </tr>
                                 </tfoot>
                             </table>
