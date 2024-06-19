@@ -16,20 +16,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Check if user exists and verify password
-        if ($user )
-        {   if(password_verify ($password,$user['password']) )
-            {
+        if ($user) {
+            if (password_verify($password, $user['password'])) {
                 // Set session variables
-                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_id'] = $user['id_user'];
                 $_SESSION['email'] = $user['email'];
+                if ($user['id_role'] == '1') {
+                    $_SESSION['role'] = "Administrateur";
+                } elseif ($user['id_role'] == '2') {
+                    $_SESSION['role'] = "employeur";
+                } elseif ($user['id_role'] == '3') {
+                    $_SESSION['role'] = "client";
+                }
                 // Redirect to index page
-                header("Location: index.php");
-                exit;
-            } else{
-            $error = "Invalid password ";
-        }
+                switch ($_SESSION['role']) {
+                    case "Administrateur":
+                            header('Location: Index.php');
+                        break;
+                    case 'employeur':
+                            header('Location: Index.php');
+                            exit;
+                        break;
+                    case 'client':
+                            header('Location: Profile.php');
+                            exit;
+                        break;
+                    default:
+                        header('Location: Login.php');
+                        exit;
+                }
+            } else {
+                $error = "Invalid password";
+            }
         } else {
-            $error = "Invalid email ";
+            $error = "Invalid email";
         }
     } else {
         $error = "Please fill in both fields.";
