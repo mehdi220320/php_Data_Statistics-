@@ -21,25 +21,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Set session variables
                 $_SESSION['user_id'] = $user['id_user'];
                 $_SESSION['email'] = $user['email'];
-                if ($user['id_role'] == '1') {
-                    $_SESSION['role'] = "Administrateur";
-                } elseif ($user['id_role'] == '2') {
-                    $_SESSION['role'] = "employeur";
-                } elseif ($user['id_role'] == '3') {
-                    $_SESSION['role'] = "client";
-                }
+                // Fetch user's role
+                $role_stmt = $db->prepare("SELECT nom_role FROM role WHERE id_role = :role_id");
+                $role_stmt->bindParam(':role_id', $user['id_role']);
+                $role_stmt->execute();
+                $role = $role_stmt->fetchColumn(); // Fetching role name
+                $_SESSION['role'] = $role;
                 // Redirect to index page
-                switch ($_SESSION['role']) {
-                    case "Administrateur":
-                            header('Location: Index.php');
+                switch ($role) {
+                    case "administrateur":
+                        header('Location: Index.php');
                         break;
-                    case 'employeur':
-                            header('Location: Index.php');
-                            exit;
+                    case 'auditeur':
+                        header('Location: Index.php');
+                        exit;
                         break;
                     case 'client':
-                            header('Location: Profile.php');
-                            exit;
+                        header('Location: Profile.php');
+                        exit;
                         break;
                     default:
                         header('Location: Login.php');
@@ -76,7 +75,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="card-body p-0">
                     <div class="row">
                         <div class="col-lg-6 d-none d-lg-flex">
-                            <div class="flex-grow-1 bg-login-image" style="background-image: url('assets/img/dogs/image3.jpeg');"></div>
+                            <div class="flex-grow-1 bg-login-image" >
+                                <img src="assets/img/img_1.png" style=" width: 451px;
+                                                                        padding-top: 47px;
+                                                                        position: absolute;
+                                                                        margin-left: 35px;">
+                            </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="p-5">

@@ -2,7 +2,9 @@
 global $db;
 include 'config db.php';
 
-$stmt = $db->query("SELECT * from user");
+$stmt = $db->query("SELECT u.*, r.nom_role 
+                    FROM user u 
+                    INNER JOIN role r ON u.id_role = r.id_role");
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -16,12 +18,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Execute the statement
         if ($stmt->execute()) {
-            echo "User deleted successfully.";
+            $msg= "User deleted successfully.";
+            header("Location: UsersTable.php");
+
         } else {
-            echo "Error: Could not delete the user.";
+            $msg= "Error: Could not delete the user.";
         }
     } else {
-        echo "Invalid user ID.";
+        $msg= "Invalid user ID.";
     }
 }
 ?>
@@ -38,8 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body id="page-top">
-<?php include "sidebar.php"?>
-    <div class="d-flex flex-column" id="content-wrapper">
+<?php include"sidebar.php"; ?>
+<div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
             <nav class="navbar navbar-expand bg-white shadow mb-4 topbar static-top navbar-light">
                 <div class="container-fluid">
@@ -134,7 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small">Valerie Luna</span>
                                     <img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg"></a>
                                 <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a class="dropdown-item" href="#"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a><a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Settings</a><a class="dropdown-item" href="#"><i class="fas fa-list fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Activity log</a>
-                                    <div class="dropdown-divider"></div><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    <div class="dropdown-divider"></div><a class="dropdown-item" href="logout.php"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
                                 </div>
                             </div>
                         </li>
@@ -144,8 +148,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container-fluid">
                 <h3 class="text-dark mb-4">Team</h3>
                 <div class="card shadow">
-                    <div class="card-header py-3">
+                    <div class="card-header py-3" style="display: flex;">
                         <p class="text-primary m-0 fw-bold">Employee Info</p>
+                        <button type="button" class="btn btn-sm btn-outline-primary" style="margin-left: 77%;font-weight: bold;font-size: medium;"><a href="Signup.php">Add Auditeur</a></button>
+
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -160,6 +166,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-md-6">
                                 <div class="text-md-end dataTables_filter" id="dataTable_filter"><label class="form-label"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></label></div>
                             </div>
+                            <?php if (!empty($msg)): ?>
+                                <div class="alert alert-warning"><?php echo $msg; ?></div>
+                            <?php endif; ?>
                         </div>
                         <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
                             <table class="table my-0" id="dataTable">
@@ -167,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <tr>
                                     <th>First Name</th>
                                     <th>Last Name</th>
-                                    <th>Description</th>
+                                    <th>Email</th>
                                     <th>Role</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
@@ -175,27 +184,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </thead>
                                 <tbody>
                                 <?php foreach ($users as $user) { ?>
-                                    <tr>
-                                        <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar5.jpeg"><?php echo $user['nom']; ?></td>
-                                        <td><?php echo $user['prenom']; ?></td>
-                                        <td><?php echo $user['description']; ?></td>
-                                        <td><?php echo $user['id_role']; ?><br></td>
-                                        <td><a href="updateuser.php?id=<?php echo $user['id_user']; ?>" class="btn btn-secondary">Edit</a></td>
-                                        <th>
-                                            <form action="table.php" method="post" style="display:inline;">
-                                                <input type="hidden" name="user_id" value="<?php echo $user['id_user']; ?>">
-                                                <button class="btn btn-danger" type="submit">Delete</button>
-                                            </form>
-                                        </th>
+                                <tr>
+                                    <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar5.jpeg"><?php echo $user['nom']; ?></td>
+                                    <td><?php echo $user['prenom']; ?></td>
+                                    <td><?php echo $user['email']; ?></td>
+                                    <td><?php echo $user['nom_role']; ?><br></td>
+                                    <td><a class="btn btn-secondary" href="updateuser.php?id=<?php echo $user['id_user']; ?>">Edit</a></td>
+                                    <th>
+                                        <form action="UsersTable.php" method="post" style="display:inline;">
+                                            <input type="hidden" name="user_id" value="<?php echo $user['id_user']; ?>">
+                                            <button class="btn btn-danger" type="submit">Delete</button>
+                                        </form>
+                                    </th>
 
-                                    </tr>
+                                </tr>
                                 </tbody>
                                 <?php }?>
                                 <tfoot>
                                 <tr>
                                     <td><strong>First Name</strong></td>
                                     <td><strong>Last Name</strong></td>
-                                    <td><strong>Description</strong></td>
+                                    <td><strong>Email</strong></td>
                                     <td><strong>Role</strong></td>
                                     <td><strong>Edit</strong></td>
                                     <td><strong>Delete</strong></td>
@@ -228,7 +237,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="text-center my-auto copyright"><span>Copyright © Brand 2024</span></div>
             </div>
         </footer>
-    </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+<a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/js/script.min.js?h=bdf36300aae20ed8ebca7e88738d5267"></script>

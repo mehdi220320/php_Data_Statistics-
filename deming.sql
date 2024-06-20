@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : Sam. 15 Juin 2024 à 01:14
+-- Généré le : Jeu. 20 Juin 2024 à 02:29
 -- Version du serveur : 10.4.24-MariaDB
 -- Version de PHP : 8.1.4
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données : `doming`
+-- Base de données : `deming`
 --
 
 -- --------------------------------------------------------
@@ -28,8 +28,8 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `role` (
-  `id_role` int(30) NOT NULL,
-  `nom_role` varchar(30) DEFAULT NULL
+  `id_role` int(255) NOT NULL,
+  `nom_role` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -37,8 +37,8 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id_role`, `nom_role`) VALUES
-(1, 'Administrateur'),
-(2, 'employeur'),
+(1, 'administrateur'),
+(2, 'auditeur'),
 (3, 'client');
 
 -- --------------------------------------------------------
@@ -48,32 +48,31 @@ INSERT INTO `role` (`id_role`, `nom_role`) VALUES
 --
 
 CREATE TABLE `user` (
-  `id_user` int(30) NOT NULL,
-  `nom` varchar(30) NOT NULL,
-  `prenom` varchar(30) NOT NULL,
-  `email` varchar(60) DEFAULT NULL,
-  `password` varchar(30) DEFAULT NULL,
-  `id_role` int(30) NOT NULL
+  `id_user` int(255) NOT NULL,
+  `nom` varchar(255) NOT NULL,
+  `prenom` varchar(255) NOT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `CIN` int(255) NOT NULL,
+  `DateDenaissance` date DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `description` varchar(255) NOT NULL,
+  `id_role` int(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `user`
 --
 
-INSERT INTO `user` (`id_user`, `nom`, `prenom`, `email`, `password`, `id_role`) VALUES
-(1, 'admin', 'root', 'admin', 'root', 1),
-(57, 'Mehdi', 'si mehdi', 'Mehdi@gmail.com', 'zerbiyani', 2),
-(58, 'Jane', 'Smith', 'Jane@gmail.com', 'password2', 2),
-(59, 'Alice', 'Johnson', 'Alice@gmail.com', 'password3', 3),
-(60, 'Bob', 'Williams', 'Bob@gmail.com', 'password4', 2),
-(61, 'Emily', 'Davis', 'Emily@gmail.com', 'password6', 3),
-(62, 'William', 'Harris', 'William@gmail.com', 'password15', 2),
-(63, 'Michael', 'Miller', 'Michael@gmail.com', 'password7', 2),
-(64, 'Barbara', 'Garcia', 'Barbara@gmail.com', 'password18', 3),
-(65, 'Patricia', 'Martin', 'Patricia@gmail.com', 'password16', 3),
-(66, 'Richard', 'Thompson', 'Richard@gmail.com', 'password17', 2),
-(67, 'Sarah', 'Wilson', 'Sarah@gmail.com', 'password8', 2),
-(68, 'Linda', 'White', 'Linda@gmail.com', 'password14', 2);
+INSERT INTO `user` (`id_user`, `nom`, `prenom`, `email`, `CIN`, `DateDenaissance`, `password`, `description`, `id_role`) VALUES
+(60, 'Bob', 'alex', 'Bob@gmail.com', 0, NULL, 'password4', '', 2),
+(61, 'Emily', 'Davis', 'Emily@gmail.com', 0, NULL, 'password6', '', 3),
+(62, 'William', 'Harris', 'William@gmail.com', 0, NULL, 'password15', '', 2),
+(63, 'Michael', 'Miller', 'Michael@gmail.com', 0, NULL, 'password7', '', 2),
+(64, 'Barbara', 'Garcia', 'Barbara@gmail.com', 0, NULL, 'password18', '', 3),
+(65, 'Patricia', 'Martin', 'Patricia@gmail.com', 0, NULL, 'password16', '', 3),
+(66, 'Richard', 'Thompson', 'Richard@gmail.com', 0, NULL, 'password17', '▶︎ •၊၊||၊|။||||။၊|။|||။|||။၊| 0:54\r\n', 2),
+(67, 'Sarah', 'Wilson', 'Sarah@gmail.com', 0, NULL, 'password8', '▶︎ •၊၊||၊|။||||။၊|။|||။|||။၊| 0:54\r\n', 2),
+(76, 'salamo3alaykom', 'simehdi', 'salamo3alaykom@gmail.com', 0, NULL, '$2y$10$BiFpSputAoyH4AQzXDiyfeFNx93EVmK8zCssbx9ATeCqBNMTxnKei', 'root', 2);
 
 --
 -- Index pour les tables déchargées
@@ -100,13 +99,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT pour la table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id_role` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_role` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(30) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
+  MODIFY `id_user` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 
 --
 -- Contraintes pour les tables déchargées

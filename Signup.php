@@ -66,23 +66,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <?php if (!empty($error)): ?>
                             <div class="alert alert-danger"><?php echo $error; ?></div>
                         <?php endif; ?>
-                        <form class="user" method="post" action="Signup.php" style="color: black">
+                        <form class="user" method="post" action="Signup.php" >
                             <div class="row mb-3">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input class="form-control form-control-user" type="text" id="exampleFirstName" placeholder="First Name" name="first_name">
+                                    <input class="form-control form-control-user" type="text" style="color: black;"  id="exampleFirstName" placeholder="First Name" name="first_name">
                                 </div>
                                 <div class="col-sm-6">
-                                    <input class="form-control form-control-user" type="text" id="exampleLastName" placeholder="Last Name" name="last_name">
+                                    <input class="form-control form-control-user" type="text"  style="color: black;" id="exampleLastName" placeholder="Last Name" name="last_name">
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <input class="form-control form-control-user" type="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address" name="email">
+                                <input class="form-control form-control-user" type="email" style="color: black;"  id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address" name="email">
                             </div>
                             <div class="row mb-3">
                                 <div class="col-sm-6 mb-3 mb-sm-0">
-                                    <input class="form-control form-control-user" type="password" id="examplePasswordInput" placeholder="Password" name="password">
+                                    <input class="form-control form-control-user" type="password" style="color: black;"  id="examplePasswordInput" placeholder="Password" name="password">
                                 </div>
-                                <div class="col-sm-6"><input class="form-control form-control-user" type="password" id="exampleRepeatPasswordInput" placeholder="Repeat Password" name="confpassword">
+                                <div class="col-sm-6">
+                                    <input class="form-control form-control-user" type="password" style="color: black;"  id="exampleRepeatPasswordInput" placeholder="Repeat Password" name="confpassword">
                                 </div>
                             </div>
                             <div class="mb-3 ">

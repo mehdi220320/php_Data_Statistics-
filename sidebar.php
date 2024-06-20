@@ -5,7 +5,6 @@ session_start();
 function getCurrentPage() {
     return basename($_SERVER['PHP_SELF']);
 }
-
 $current_page = getCurrentPage();
 
 // Redirect to log if the user is not logged in
@@ -19,11 +18,10 @@ if (!isset($_SESSION['user_id'])||!isset($_SESSION['role'])) {
 // Define the access control logic
 function isAccessAllowed($role, $page) {
     $rolePages = [
-        'Administrateur' => ['Index.php', 'UsersTable.php'],
-        'employeur' => ['Index.php'],
+        'administrateur' => ['Index.php', 'UsersTable.php','updateuser.php'],
+        'auditeur' => ['Index.php'],
         'client' => ['Profile.php']
     ];
-
     return isset($rolePages[$role]) && in_array($page, $rolePages[$role]);
 }
 
@@ -58,7 +56,7 @@ if ($role && !isAccessAllowed($role, $current_page)) {
             <ul class="navbar-nav text-light" id="accordionSidebar">
 
                 <!--     Administrateur Views ...               -->
-                <?php if ($role === "Administrateur"): ?>
+                <?php if ($role === "administrateur"): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'Index.php') ? 'active' : '' ?>" href="Index.php"><i class="fas fa-tachometer-alt"></i><span>Index</span></a>
                     </li>
@@ -67,9 +65,9 @@ if ($role && !isAccessAllowed($role, $current_page)) {
                     </li>
                 <?php endif; ?>
                 <!--     employeur Views ...               -->
-                <?php if ($role === "employeur"): ?>
+                <?php if ($role === "auditeur"): ?>
                     <li class="nav-item">
-                        <a class="nav-link <?= ($current_page === ' Index.php') ? 'active' : '' ?>" href="Index.php"><i class="fas fa-user"></i><span>employeur</span></a>
+                        <a class="nav-link <?= ($current_page === ' Index.php') ? 'active' : '' ?>" href="Index.php"><i class="fas fa-user"></i><span>Auditeur</span></a>
                     </li>
                 <?php endif; ?>
                 <!--     Client Views ...               -->
@@ -77,7 +75,7 @@ if ($role && !isAccessAllowed($role, $current_page)) {
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'Profile.php') ? 'active' : '' ?>" href="profile.php"><i class="fas fa-user"></i><span>Profile</span></a>
                     </li>
-                <?php endif; echo $current_page; ?>
+                <?php endif;?>
                 <li class="nav-item">
                     <a class="nav-link " href="logout.php"><i class="fas fa-user"></i><span>Logout </span></a>
                 </li>

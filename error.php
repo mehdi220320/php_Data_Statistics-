@@ -643,7 +643,7 @@
 </head>
 
 <body>
-<button role="button" tabindex="0" style="margin-left: 36%; margin-top: 4%; --buttonColor: #FF0033;"><a href="Login.php" style="color: #FF0033;">Press to go Back!<span></span><span></span><span></span><span></span><b aria-hidden="true">Boo!</b><b aria-hidden="true">Boo!</b><b aria-hidden="true">Boo!</b><b aria-hidden="true">Boo!</b></a></button>
+<button role="button" tabindex="0" style="margin-left: 36%; margin-top: 4%; --buttonColor: #FF0033;"><a href="logout.php" style="color: #FF0033;">Press to go Back!<span></span><span></span><span></span><span></span><b aria-hidden="true">Boo!</b><b aria-hidden="true">Boo!</b><b aria-hidden="true">Boo!</b><b aria-hidden="true">Boo!</b></a></button>
 <div class='hover'>
     <div class='background'>
         <div class='door'>403</div>
