@@ -12,15 +12,17 @@ if (!isset($_SESSION['user_id'])||!isset($_SESSION['role'])) {
     header('Location: login.php');
     exit;
 }else{
+    $user_id=$_SESSION['user_id'];
+    $email=$_SESSION['email'];
     $role = $_SESSION['role'];
 }
 
 // Define the access control logic
 function isAccessAllowed($role, $page) {
     $rolePages = [
-        'administrateur' => ['Index.php', 'UsersTable.php','updateuser.php'],
-        'auditeur' => ['Index.php'],
-        'client' => ['Profile.php']
+        'administrateur' => ['Index.php', 'UsersTable.php','updateuser.php','RequestList','RequestListTreatement'],
+        'auditeur' => ['Index.php','RequestList.php','RequestListTreatement'],
+        'client' => ['Profile.php','MyRequestList.php','CreateRequest.php'],
     ];
     return isset($rolePages[$role]) && in_array($page, $rolePages[$role]);
 }
@@ -63,17 +65,29 @@ if ($role && !isAccessAllowed($role, $current_page)) {
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'UsersTable.php') ? 'active' : '' ?>" href="UsersTable.php"><i class="fas fa-user"></i><span>Users Table</span></a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($current_page === 'RequestList.php') ? 'active' : '' ?>" href="RequestList.php"><i class="fas fa-user"></i><span>Request List Table</span></a>
+                    </li>
                 <?php endif; ?>
                 <!--     employeur Views ...               -->
                 <?php if ($role === "auditeur"): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === ' Index.php') ? 'active' : '' ?>" href="Index.php"><i class="fas fa-user"></i><span>Auditeur</span></a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($current_page === 'RequestList.php') ? 'active' : '' ?>" href="RequestList.php"><i class="fas fa-user"></i><span>Request List Table</span></a>
+                    </li>
                 <?php endif; ?>
                 <!--     Client Views ...               -->
                 <?php if ($role === "client"): ?>
                     <li class="nav-item">
                         <a class="nav-link <?= ($current_page === 'Profile.php') ? 'active' : '' ?>" href="profile.php"><i class="fas fa-user"></i><span>Profile</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($current_page === 'MyRequestList.php') ? 'active' : '' ?>" href="MyRequestList.php"><i class="fas fa-user"></i><span>My Request List Table</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link <?= ($current_page === 'CreateRequest.php') ? 'active' : '' ?>" href="CreateRequest.php"><i class="fas fa-user"></i><span>Create a Request</span></a>
                     </li>
                 <?php endif;?>
                 <li class="nav-item">
