@@ -146,11 +146,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </nav>
             <div class="container-fluid">
-                <h3 class="text-dark mb-4">Team</h3>
+                <h3 class="text-dark mb-4">Administration Panel</h3>
                 <div class="card shadow">
                     <div class="card-header py-3" style="display: flex;">
-                        <p class="text-primary m-0 fw-bold">Employee Info</p>
-                        <button type="button" class="btn btn-sm btn-outline-primary" style="margin-left: 77%;font-weight: bold;font-size: medium;"><a href="Signup.php">Add Auditeur</a></button>
+                        <p class="text-primary m-0 fw-bold">Users Info</p>
+                        <button type="button" class="btn btn-sm btn-outline-primary" style="margin-left: 77%;font-weight: bold;font-size: medium;"><a href="AddAuditeur.php">Add Auditeur</a></button>
 
                     </div>
                     <div class="card-body">
@@ -177,6 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <th>First Name</th>
                                     <th>Last Name</th>
                                     <th>Email</th>
+                                    <th>Cin</th>
                                     <th>Role</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
@@ -188,6 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar5.jpeg"><?php echo $user['nom']; ?></td>
                                     <td><?php echo $user['prenom']; ?></td>
                                     <td><?php echo $user['email']; ?></td>
+                                    <td><?php echo $user['CIN']; ?></td>
                                     <td><?php echo $user['nom_role']; ?><br></td>
                                     <td><a class="btn btn-secondary" href="updateuser.php?id=<?php echo $user['id_user']; ?>">Edit</a></td>
                                     <th>
@@ -205,6 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td><strong>First Name</strong></td>
                                     <td><strong>Last Name</strong></td>
                                     <td><strong>Email</strong></td>
+                                    <td><strong>Cin</strong></td>
                                     <td><strong>Role</strong></td>
                                     <td><strong>Edit</strong></td>
                                     <td><strong>Delete</strong></td>

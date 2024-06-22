@@ -1,5 +1,9 @@
 <?php
+include "sidebar.php" ;
+include 'config db.php';
 global $db;
+$user_id=$_SESSION['user_id'];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get the form input
     $service = filter_input(INPUT_POST, 'service', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -17,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bindParam(':adresse', $adresse);
             $stmt->bindParam(':date', $date);
             $stmt->bindParam(':description', $description);
-            $stmt->bindParam(':id_user', $_SESSION['user_id']);
+            $stmt->bindParam(':id_user', $user_id);
 
         // Execute the statement
 
@@ -193,7 +197,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 </head>
 <body id="page-top">
-<?php include "sidebar.php"?>
 <div class="d-flex flex-column" id="content-wrapper">
     <div id="content">
         <nav

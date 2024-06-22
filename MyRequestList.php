@@ -1,7 +1,7 @@
 <?php
 global $db;
 include "config db.php";
-//session_start();
+session_start();
 $user_id=$_SESSION['user_id'];
 $stmt = $db->prepare("SELECT r.*, s.service_name, u.email FROM reclamation r 
                             INNER JOIN service s ON r.service_id = s.service_id 

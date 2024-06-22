@@ -1,60 +1,62 @@
 <?php
 global $db;
-include "config db.php";
-
-$stmt = $db->query("SELECT r.*, s.service_name, u.email 
-                    FROM reclamation r 
-                    INNER JOIN service s ON r.service_id = s.service_id
-                    INNER JOIN user u ON r.user_id = u.id_user
-                    ORDER BY r.etat");
-$requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+include 'config db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get the user ID from the POST request
-    $reclamation_id = filter_input(INPUT_POST, 'reclamation_id', FILTER_SANITIZE_NUMBER_INT);
+    // Get the form input
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+    $confpassword = filter_input(INPUT_POST, 'confpassword', FILTER_SANITIZE_STRING);
+    $fname = filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING);
+    $lname = filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING);
+    $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);
+    $cin = filter_input(INPUT_POST, 'cin', FILTER_SANITIZE_NUMBER_INT);
+    $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
+    // Validate form input
+    if (!empty($email) && !empty($password) && !empty($fname) && !empty($lname) && !empty($description) && !empty($confpassword)) {
+        if($password == $confpassword)
+        {
+            // Hash the password
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    if ($reclamation_id) {
-        // Prepare the SQL statement to delete the user
-        $stmt = $db->prepare("DELETE FROM reclamation WHERE reclamation_id = :reclamation_id");
-        $stmt->bindParam(':reclamation_id', $reclamation_id);
+            // Prepare the SQL statement
+            $stmt = $db->prepare("INSERT INTO user (`id_user`, `nom`, `prenom`, `email`,CIN,DateDenaissance, `password`, `description`, `id_role`) VALUES (NULL,:lname,:fname,:email,:cin,:date, :password, :description,'2')");
+            // Bind the parameters
+            $stmt->bindParam(':lname', $lname);
+            $stmt->bindParam(':fname', $fname);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':cin', $cin);
+            $stmt->bindParam(':date', $date);
+            $stmt->bindParam(':password', $hashedPassword);
+            $stmt->bindParam(':description', $description);
+            // Execute the statement
 
-        // Execute the statement
-        if ($stmt->execute()) {
-            $msg= "Request deleted successfully.";
-            header("Location: RequestList.php");
-
-        } else {
-            $msg= "Error: Could not delete the request.";
+            if ($stmt->execute()) {
+                $error= "New user created successfully.";
+                header("Location: AddAuditeur.php");
+            } else {
+                $error ="Error: Could not execute the query.";
+            }
+        }else {
+            $error="Please confirme your password";
         }
     } else {
-        $msg= "Invalid request ID.";
-    }
-}
-function getStatusColor($status){
-    switch ($status){
-        case 'traité' :
-            return 'green';
-        case 'refusé' :
-            return 'red';
-        default :
-            return 'white';
+        $error= "Please fill in all fields.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Table - Brand</title>
+    <title>Register - Brand</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
     <link rel="stylesheet" href="assets/css/styles.min.css">
 </head>
 
-<body id="page-top">
+<body>
 <?php include"sidebar.php"; ?>
 <div class="d-flex flex-column" id="content-wrapper">
     <div id="content">
@@ -159,96 +161,64 @@ function getStatusColor($status){
             </div>
         </nav>
         <div class="container-fluid">
-            <h3 class="text-dark mb-4">Requests List</h3>
+            <h3 class="text-dark mb-4">Administration Panel</h3>
             <div class="card shadow">
                 <div class="card-header py-3" style="display: flex;">
-                    <p class="text-primary m-0 fw-bold">Requests Info</p>
+                    <p class="text-primary m-0 fw-bold">Add Auditeur</p>
+                    <button type="button" class="btn btn-sm btn-outline-primary" style="margin-left: 83%;font-weight: bold;font-size: medium;"><a href="UsersTable.php" style="text-decoration: none">Users List</a></button>
                 </div>
-                <div class="card-body">
+                <div class="card-body lh-sm ">
                     <div class="row">
-                        <div class="col-md-6 text-nowrap">
-                            <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable"><label class="form-label">Show&nbsp;<select class="d-inline-block form-select form-select-sm">
-                                        <option value="10" selected="">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                    </select>&nbsp;</label></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="text-md-end dataTables_filter" id="dataTable_filter"><label class="form-label"><input type="search" class="form-control form-control-sm" aria-controls="dataTable" placeholder="Search"></label></div>
-                        </div>
-                        <?php if (!empty($msg)): ?>
-                            <div class="alert alert-warning"><?php echo $msg; ?></div>
-                        <?php endif; ?>
-                    </div>
-                    <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
-                        <table class="table my-0" id="dataTable">
-                            <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th>Title</th>
-                                <th>Adresse</th>
-                                <th>Service</th>
-                                <th>Creation date</th>
-                                <th>Edit</th>
-                                <th>Delete</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <?php foreach ($requests as $req) { ?>
-                            <tr>
-                                <td><img class="rounded-circle me-2" width="30" height="30" src="assets/img/avatars/avatar5.jpeg"><?php echo $req['email']; ?></td>
-                                <td><?php echo $req['titre']; ?></td>
-                                <td><?php echo $req['adresse']; ?></td>
-                                <td><?php echo $req['service_name']; ?><br></td>
-                                <td><?php echo $req['date']; ?><br></td>
-                                <?php if($req['etat']=='en attente'){?>
-                                <td><a class="btn btn-outline-primary" href="RequestTreatment.php?id=<?php echo $req['reclamation_id']; ?>">Treat</a></td>
-                                <?php ;}
-                                else{?>
-                                <td style="font-size:large;color: <?php echo getStatusColor($req['etat']) ?>"><strong><?php echo $req['etat']; ?></strong></td>
-                                <?php ;}?>
+                        <div class="col-lg-15">
+                            <div class="p-5">
+                                <div class="text-center">
+                                    <h4 class="text-dark mb-5" style="font-size: 3em;font-family: 'Bodoni MT Poster Compressed'">Create an Account!</h4>
+                                </div>
+                                <?php if (!empty($error)): ?>
+                                    <div class="alert alert-danger"><?php echo $error; ?></div>
+                                <?php endif; ?>
+                                <form class="user" method="post" action="AddAuditeur.php" >
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input class="form-control form-control-user" type="text" style="color: black;"  id="exampleFirstName" placeholder="First Name" name="first_name">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input class="form-control form-control-user" type="text"  style="color: black;" id="exampleLastName" placeholder="Last Name" name="last_name">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input class="form-control form-control-user" type="email" style="color: black;"  id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address" name="email">
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input class="form-control form-control-user" type="number" style="color: black;"  id="cin" placeholder="CIN" name="cin">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input class="form-control form-control-user" type="date"  style="color: black;" id="birthdaydate" placeholder="Date de naissance" name="date">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <input class="form-control form-control-user" type="password" style="color: black;"  id="examplePasswordInput" placeholder="Password" name="password">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <input class="form-control form-control-user" type="password" style="color: black;"  id="exampleRepeatPasswordInput" placeholder="Repeat Password" name="confpassword">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 ">
+                                        <label for="exampleFormControlTextarea1">Description:</label>
+                                        <textarea class="form-control" id="exampleFormControlTextarea1"  name="description" rows="3"></textarea>
+                                    </div>
 
-                                <th>
-                                    <form action="RequestList.php" method="post" style="display:inline;">
-                                        <input type="hidden" name="reclamation_id" value="<?php echo $req['reclamation_id']; ?>">
-                                        <button class="btn btn-danger" type="submit">Delete</button>
-                                    </form>
-                                </th>
+                                    <button class="btn btn-primary d-block btn-user w-100" type="submit">Submit</button>
 
-                            </tr>
-                            </tbody>
-                            <?php }?>
-                            <tfoot>
-                            <tr>
-                                <td><strong>Email</strong></td>
-                                <td><strong>Title</strong></td>
-                                <td><strong>Adresse</strong></td>
-                                <td><strong>Service</strong></td>
-                                <td><strong>Creation date</strong></td>
-                                <td><strong>Edit</strong></td>
-                                <td><strong>Delete</strong></td>
-                            </tr>
-                            </tfoot>
-                        </table>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 align-self-center">
-                            <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">Showing 1 to 10 of 27</p>
-                        </div>
-                        <div class="col-md-6">
-                            <nav class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-                                <ul class="pagination">
-                                    <li class="page-item disabled"><a class="page-link" aria-label="Previous" href="#"><span aria-hidden="true">«</span></a></li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span aria-hidden="true">»</span></a></li>
-                                </ul>
-                            </nav>
+                                </form>
+
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
@@ -262,6 +232,7 @@ function getStatusColor($status){
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="/assets/js/script.min.js?h=bdf36300aae20ed8ebca7e88738d5267"></script>
+
 </body>
 
 </html>

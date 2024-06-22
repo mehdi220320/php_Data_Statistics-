@@ -1,5 +1,8 @@
 <?php
-session_start();
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Function to get the current page's filename
 function getCurrentPage() {
@@ -20,8 +23,8 @@ if (!isset($_SESSION['user_id'])||!isset($_SESSION['role'])) {
 // Define the access control logic
 function isAccessAllowed($role, $page) {
     $rolePages = [
-        'administrateur' => ['Index.php', 'UsersTable.php','updateuser.php','RequestList','RequestListTreatement'],
-        'auditeur' => ['Index.php','RequestList.php','RequestListTreatement'],
+        'administrateur' => ['Index.php', 'UsersTable.php','updateuser.php','RequestList.php','RequestTreatment.php','AddAuditeur.php'],
+        'auditeur' => ['Index.php','RequestList.php','RequestTreatment.php'],
         'client' => ['Profile.php','MyRequestList.php','CreateRequest.php'],
     ];
     return isset($rolePages[$role]) && in_array($page, $rolePages[$role]);
